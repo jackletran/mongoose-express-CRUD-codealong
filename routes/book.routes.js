@@ -82,10 +82,25 @@ router.post("/books/:bookId/edit", (req, res) => {
 
   Book.findByIdAndUpdate(bookId, newDetails)
     .then(() => {
+      // res.redirect(`/books/${bookId}`); // redirect to book details page
       res.redirect("/books");
     })
     .catch((error) => {
       console.log("Error updating book in DB", error);
+      next(error);
+    });
+});
+
+// DELETE: delete book
+router.post("/books/:bookId/delete", (req, res) => {
+  const { bookId } = req.params;
+
+  Book.findByIdAndRemove(bookId)
+    .then(() => {
+      res.redirect("/books");
+    })
+    .catch((error) => {
+      console.log("Error deleting book from DB", error);
       next(error);
     });
 });
