@@ -55,4 +55,39 @@ router.get("/books/:bookId", (req, res) => {
     });
 });
 
+// UPDATE: Render form
+router.get("/books/:bookId/edit", (req, res) => {
+  const { bookId } = req.params;
+
+  Book.findById(bookId)
+    .then((bookDetails) => {
+      res.render("books/book-edit", bookDetails);
+    })
+    .catch((error) => {
+      console.log("Error getting book details from DB", error);
+      next(error);
+    });
+});
+
+// UPDATE: Process form
+router.post("/books/:bookId/edit", (req, res) => {
+  const bookId = req.params.bookId;
+
+  const newDetails = {
+    title: req.body.title,
+    author: req.body.author,
+    description: req.body.description,
+    rating: req.body.rating,
+  };
+
+  Book.findByIdAndUpdate(bookId, newDetails)
+    .then(() => {
+      res.redirect("/books");
+    })
+    .catch((error) => {
+      console.log("Error updating book in DB", error);
+      next(error);
+    });
+});
+
 module.exports = router;
