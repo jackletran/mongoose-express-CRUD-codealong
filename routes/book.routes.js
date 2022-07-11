@@ -2,6 +2,7 @@ const Book = require("../models/Book.model");
 
 const router = require("express").Router();
 
+// READ: List all books
 router.get("/books", (req, res, next) => {
   Book.find()
     .then((booksFromDB) => {
@@ -16,6 +17,31 @@ router.get("/books", (req, res, next) => {
     });
 });
 
+// CREATE: Render form
+router.get("/books/create", (req, res) => {
+  res.render("books/book-create");
+});
+
+// CREATE: Process form
+router.post("/books/create", (req, res) => {
+  const bookDetails = {
+    title: req.body.title,
+    author: req.body.author,
+    description: req.body.description,
+    rating: req.body.rating,
+  };
+
+  Book.create(bookDetails)
+    .then(() => {
+      res.redirect("/books");
+    })
+    .catch((error) => {
+      console.log("Error creating book in the DB", error);
+      next(error);
+    });
+});
+
+// READ: Book details
 router.get("/books/:bookId", (req, res) => {
   const bookId = req.params.bookId;
 
